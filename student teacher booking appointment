@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Soil Farming Agent - Precision Agriculture AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #11998e, #38ef7d);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(17,153,142,0.2);
+        }
+
+        .card h2 {
+            color: #1a4d4d;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .soil-gauge {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 60px;
+            position: relative;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            border-radius: 60px;
+            position: relative;
+            transition: all 1s ease;
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8em;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .sensor {
+            text-align: center;
+            padding: 15px;
+            background: rgba(56,239,125,0.1);
+            border-radius: 12px;
+            border: 2px solid rgba(56,239,125,0.3);
+        }
+
+        .sensor-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #11998e;
+        }
+
+        .sensor-label {
+            font-size: 0.85em;
+            color: #1a4d4d;
+            margin-top: 5px;
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-left: 5px solid #11998e;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a4d4d;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #38ef7d;
+            box-shadow: 0 0 0 4px rgba(56,239,125,0.1);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(17,153,142,0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .field-map {
+            height: 300px;
+            background: linear-gradient(135deg, #90EE90, #228B22);
+            border-radius: 15px;
+            position: relative;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .field-zone {
+            position: absolute;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .zone-healthy { background: rgba(34,139,34,0.6); }
+        .zone-dry { background: rgba(255,193,7,0.7); animation-delay: 0.5s; }
+        .zone-poor { background: rgba(220,20,60,0.6); animation-delay: 1s; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .crop-growth {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .growth-stage {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 12px;
+            border: 3px solid transparent;
+        }
+
+        .growth-active {
+            border-color: #38ef7d;
+            background: rgba(56,239,125,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 { font-size: 2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Soil Farming Agent</h1>
+            <p>AI-Powered Precision Agriculture & Soil Health Monitoring</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Soil Health Overview -->
+            <div class="card">
+                <h2>🌾 Soil Health Gauge</h2>
+                <div class="soil-gauge">
+                    <div class="gauge-fill" id="soilGauge" style="width: 72%; background: linear-gradient(135deg, #38ef7d, #11998e);"></div>
+                    <div class="gauge-value">
+                        <span id="soilHealth">72%</span><br>
+                        <small>Optimal</small>
+                    </div>
+                </div>
+                <div class="sensor-grid">
+                    <div class="sensor">
+                        <div class="sensor-value" id="moisture">42%</div>
+                        <div class="sensor-label">Moisture</div>
+                    </div>
+                    <div class="sensor">
+                        <div class="sensor-value" id="ph">6.8</div>
+                        <div class="sensor-label">pH Level</div>
+                    </div>
+                    <div class="sensor">
+                        <div class="sensor-value" id="temp">22°C</div>
+                        <div class="sensor-label">Temperature</div>
+                    </div>
+                    <div class="sensor">
+                        <div class="sensor-value" id="nPk">N:18 P:12 K:15</div>
+                        <div class="sensor-label">NPK</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Field Map -->
+            <div class="card">
+                <h2>🗺️ Field Zones</h2>
+                <div class="field-map" id="fieldMap"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <span style="color: #228B22; font-weight: 600;">🟢 82% Healthy</span>
+                    <span style="color: #FFD700; font-weight: 600;">🟡 12% Dry</span>
+                    <span style="color: #DC143C; font-weight: 600;">🔴 6% Poor</span>
+                </div>
+            </div>
+
+            <!-- AI Recommendations -->
+            <div class="card">
+                <h2>🤖 AI Recommendations</h2>
+                <div id="recommendations" class="recommendations">
+                    <strong>✅ Optimal conditions detected!</strong><br>
+                    Continue current irrigation schedule. Nitrogen boost recommended for Zone B.
+                </div>
+                <button class="btn btn-primary" onclick="applyRecommendations()">Apply Auto Actions</button>
+            </div>
+
+            <!-- Farm Configuration -->
+            <div class="card">
+                <h2>⚙️ Farm Settings</h2>
+                <div class="form-group">
+                    <label>Crop Type</label>
+                    <select id="cropType">
+                        <option value="wheat">Wheat</option>
+                        <option value="corn">Corn</option>
+                        <option value="rice">Rice</option>
+                        <option value="soybean">Soybean</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Field Size (acres)</label>
+                    <input type="number" id="fieldSize" value="25" min="1" max="1000">
+                </div>
+                <button class="btn btn-primary" onclick="analyzeField()">Analyze Field</button>
+            </div>
+        </div>
+
+        <!-- Growth Stages & Analytics -->
+        <div class="dashboard-grid">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>🌿 Crop Growth Stages</h2>
+                <div class="crop-growth">
+                    <div class="growth-stage growth-active">
+                        <div style="font-size: 2.5em; margin-bottom: 10px;">🌱</div>
+                        <strong>Vegetative</strong><br>
+                        <small>Day 45/90 (50%)</small>
+                    </div>
+                    <div class="growth-stage">
+                        <div style="font-size: 2.5em; margin-bottom: 10px;">🌾</div>
+                        <strong>Flowering</strong><br>
+                        <small>Pending</small>
+                    </div>
+                    <div class="growth-stage">
+                        <div style="font-size: 2.5em; margin-bottom: 10px;">🌽</div>
+                        <strong>Maturity</strong><br>
+                        <small>Pending</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sensorData = {
+            moisture: 42,
+            ph: 6.8,
+            temp: 22,
+            npk: {n:18, p:12, k:15},
+            health: 72
+        };
+
+        let fieldZones = [
+            {x:20, y:20, r:60, status:'healthy'},
+            {x:70, y:30, r:40, status:'dry'},
+            {x:40, y:70, r:30, status:'poor'}
+        ];
+
+        // Initialize dashboard
+        function initDashboard() {
+            updateSensors();
+            renderFieldMap();
+            startSensorSimulation();
+        }
+
+        function updateSensors() {
+            document.getElementById('soilHealth').textContent = sensorData.health + '%';
+            document.getElementById('moisture').textContent = sensorData.moisture + '%';
+            document.getElementById('ph').textContent = sensorData.ph;
+            document.getElementById('temp').textContent = sensorData.temp + '°C';
+            document.getElementById('nPk').textContent = `N:${sensorData.npk.n} P:${sensorData.npk.p} K:${sensorData.npk.k}`;
+            
+            // Update gauge
+            const gauge = document.getElementById('soilGauge');
+            gauge.style.width = sensorData.health + '%';
+        }
+
+        function renderFieldMap() {
+            const map = document.getElementById('fieldMap');
+            map.innerHTML = fieldZones.map((zone, i) => 
+                `<div class="field-zone zone-${zone.status}" 
+                     style="left: ${zone.x}%; top: ${zone.y}%; width: ${zone.r*2}px; height: ${zone.r*2}px;"></div>`
+            ).join('');
+        }
+
+        function analyzeField() {
+            sensorData.health = Math.max(30, Math.min(95, 
+                (sensorData.moisture * 0.4 + 
+                 ((sensorData.ph-5)/2 * 20) + 
+                 (sensorData.npk.n/40 * 25) + 
+                 (35 - Math.abs(sensorData.temp-25)) * 0.5)
+            ));
+            updateSensors();
+            generateRecommendations();
+        }
+
+        function generateRecommendations() {
+            const recs = document.getElementById('recommendations');
+            let message = '';
+            
+            if (sensorData.health < 50) {
+                message = '⚠️ CRITICAL: Immediate intervention required!<br>';
+                if (sensorData.moisture < 30) message += 'Increase irrigation by 40%. ';
+                if (sensorData.ph < 5.5 || sensorData.ph > 7.5) message += 'Apply pH correction. ';
+            } else if (sensorData.health < 70) {
+                message = '⚡ IMPROVE: ';
+                if (sensorData.moisture < 35) message += 'Increase watering schedule. ';
+                if (sensorData.npk.n < 15) message += 'Apply nitrogen fertilizer. ';
+            } else {
+                message = '✅ OPTIMAL conditions!<br>';
+                message += `Current yield projection: ${(sensorData.health/100 * 95).toFixed(0)} bu/acre`;
+            }
+            
+            recs.innerHTML = `<strong>${message}</strong>`;
+        }
+
+        function applyRecommendations() {
+            // Simulate auto-actions
+            sensorData.moisture = Math.min(50, sensorData.moisture + 8);
+            sensorData.npk.n = Math.min(25, sensorData.npk.n + 3);
+            analyzeField();
+            alert('✅ Auto-actions applied! Drones dispatched for precision treatment.');
+        }
+
+        // Real-time sensor simulation
+        function startSensorSimulation() {
+            setInterval(() => {
+                sensorData.moisture += (Math.random() - 0.5) * 4;
+                sensorData.ph += (Math.random() - 0.5) * 0.3;
+                sensorData.temp += (Math.random() - 0.5) * 2;
+                sensorData.npk.n += (Math.random() - 0.5) * 2;
+                
+                sensorData.moisture = Math.max(20, Math.min(60, sensorData.moisture));
+                sensorData.ph = Math.max(5.5, Math.min(7.5, sensorData.ph));
+                sensorData.temp = Math.max(15, Math.min(35, sensorData.temp));
+                
+                analyzeField();
+            }, 3000);
+        }
+
+        // Initialize
+        window.onload = initDashboard;
+    </script>
+</body>
+</html>
